@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ProxyThread implements Runnable {
     private Socket clientSocket;
@@ -17,7 +18,7 @@ public class ProxyThread implements Runnable {
 
             byte[] request = new byte[1024];
             byte[] reply = new byte[4096];
-            InputStream inFromClient = clientSocket.getInputStream();
+            InputStream inFromClient = new BufferedInputStream(clientSocket.getInputStream());
             OutputStream outToClient = clientSocket.getOutputStream();
 
             String inputLine;
@@ -56,6 +57,7 @@ public class ProxyThread implements Runnable {
                             outToServer.flush();
                         }
                     } catch (IOException e) {
+                        break;
                     }
                 }
             }).start();
@@ -67,7 +69,7 @@ public class ProxyThread implements Runnable {
                         outToClient.flush();
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    break;
                 }
 
                 in.close();
