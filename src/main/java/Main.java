@@ -5,7 +5,8 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) {
         try {
-            new Thread(new RequestHandler(7236)).start();
+            int port = Integer.valueOf(args[0]);
+            new Thread(new RequestHandler(port)).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
