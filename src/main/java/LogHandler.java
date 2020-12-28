@@ -18,7 +18,7 @@ public class LogHandler implements Runnable {
             PrintWriter output = null;
             try {
                 String payload = log.get();
-                if (!payload.equals("")) {
+                if (!payload.isEmpty() || !payload.isBlank()) {
                     output = new PrintWriter(new FileWriter(file, true));
                     output.printf("%s\r\n", log.get());
                     output.close();

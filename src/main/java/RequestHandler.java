@@ -20,7 +20,6 @@ public class RequestHandler extends ServerSocket implements Runnable {
         while (true) {
             try {
                 new Thread(new ProxyThread(this.accept(), "Thread" + String.valueOf(threadNumber), log)).start();
-                System.out.println("Thread: " + Util.ANSI_GREEN + "Thread" + String.valueOf(threadNumber) + Util.ANSI_RESET + " created");
                 threadNumber++;
             } catch (IOException e) {
                 e.printStackTrace();

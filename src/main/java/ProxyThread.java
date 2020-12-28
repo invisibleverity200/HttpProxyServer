@@ -20,8 +20,6 @@ public class ProxyThread implements Runnable {
     @Override
     public void run() {
         try {
-            System.out.println("Connection IP: " + Util.ANSI_RED + clientSocket.getInetAddress().toString().substring(1) + Util.ANSI_RESET);
-
             byte[] request = new byte[1024];
             byte[] reply = new byte[4096];
             InputStream inFromClient = new BufferedInputStream(clientSocket.getInputStream());
@@ -48,19 +46,17 @@ public class ProxyThread implements Runnable {
             } catch (NullPointerException e) {
 
             }
-            if (hostname.equals("") || port == 443) {
+            if (hostname.isEmpty() || hostname.isBlank()) {
                 clientSocket.close();
                 return;
             }
             inFromClient.reset();
-            System.out.println("Thread: " + proxyThreadIndentifier + "\nHostname: " + Util.ANSI_GREEN + hostname + Util.ANSI_RESET);
-            System.out.println("Port: " + Util.ANSI_GREEN + port + Util.ANSI_RESET + "\n\n");
-
+            Util.safePrintln("Connection IP: " + Util.ANSI_RED + clientSocket.getInetAddress().toString().substring(1) + Util.ANSI_RESET + "\nThread: " + proxyThreadIndentifier + "\nHostname: " + Util.ANSI_GREEN + hostname + Util.ANSI_RESET + "\nPort:" + Util.ANSI_GREEN + port + Util.ANSI_RESET + "\n\n");
 
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
             LocalDateTime now = LocalDateTime.now();
 
-            String logPayload = "[" + dtf.format(now) + "]    IP: " + clientSocket.getInetAddress().toString().substring(1) + "   Hostname:Port: " + hostname +":"+port;
+            String logPayload = "[" + dtf.format(now) + "]    IP: " + clientSocket.getInetAddress().toString().substring(1) + "   Hostname:Port: " + hostname + ":" + port;
             log.add(logPayload);
 
             serverSocket = new Socket(hostname, port);
@@ -92,6 +88,6 @@ public class ProxyThread implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Thread " + proxyThreadIndentifier + "          [" + Util.ANSI_RED + "CLOSED" + Util.ANSI_RESET + "]");
+        System.out.println("Thread: " + proxyThreadIndentifier + "          [" + Util.ANSI_RED + "CLOSED" + Util.ANSI_RESET + "]");
     }
 }
