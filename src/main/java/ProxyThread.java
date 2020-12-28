@@ -24,6 +24,7 @@ public class ProxyThread implements Runnable {
             byte[] reply = new byte[4096];
             InputStream inFromClient = new BufferedInputStream(clientSocket.getInputStream());
             OutputStream outToClient = clientSocket.getOutputStream();
+            BufferedWriter proxyToClientBw = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
 
             String inputLine;
             String hostname = "";
@@ -63,6 +64,17 @@ public class ProxyThread implements Runnable {
 
             final InputStream inFromServer = serverSocket.getInputStream();
             final OutputStream outToServer = serverSocket.getOutputStream();
+
+            if (hostname.contains("https")) {
+                for(int i=0;i<5;i++){ //FIXME possible bug
+                    in.readLine();
+                }
+                String line = "HTTP/1.0 200 Connection established\r\n" +
+                        "Proxy-Agent: ProxyServer/1.0\r\n" +
+                        "\r\n";
+                proxyToClientBw.write(line);
+                proxyToClientBw.flush();
+            }
 
             new Thread(() -> {
                 int bytes_read;

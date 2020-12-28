@@ -15,7 +15,7 @@ public class LogHandler implements Runnable {
     @Override
     public void run() {
         while (true) {
-            PrintWriter output = null;
+            PrintWriter output;
             try {
                 Thread.sleep(100);
                 String payload = log.get();
