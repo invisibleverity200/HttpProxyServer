@@ -1,16 +1,20 @@
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ProxyThread implements Runnable {
     private Socket clientSocket;
     private Socket serverSocket;
     private String proxyThreadIndentifier;
+    private Log log;
 
 
-    ProxyThread(Socket clientSocket, String proxyThreadIndentifier) {
+    ProxyThread(Socket clientSocket, String proxyThreadIndentifier, Log log) {
         this.clientSocket = clientSocket;
         this.proxyThreadIndentifier = proxyThreadIndentifier;
+        this.log = log;
     }
 
     @Override
@@ -44,13 +48,20 @@ public class ProxyThread implements Runnable {
             } catch (NullPointerException e) {
 
             }
-            if(hostname.equals("") || port == 443){
+            if (hostname.equals("") || port == 443) {
                 clientSocket.close();
                 return;
             }
             inFromClient.reset();
             System.out.println("Thread: " + proxyThreadIndentifier + "\nHostname: " + Util.ANSI_GREEN + hostname + Util.ANSI_RESET);
-            System.out.println("Port: " + Util.ANSI_GREEN + port + Util.ANSI_RESET+ "\n\n");
+            System.out.println("Port: " + Util.ANSI_GREEN + port + Util.ANSI_RESET + "\n\n");
+
+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
+
+            String logPayload = "[" + dtf.format(now) + "]    IP: " + clientSocket.getInetAddress().toString().substring(1) + "   Hostname:Port: " + hostname +":"+port;
+            log.add(logPayload);
 
             serverSocket = new Socket(hostname, port);
 
