@@ -17,13 +17,16 @@ public class LogHandler implements Runnable {
         while (true) {
             PrintWriter output = null;
             try {
+                Thread.sleep(100);
                 String payload = log.get();
-                if (!payload.isEmpty() || !payload.isBlank()) {
+                if ((!payload.isEmpty() && payload.contains("IP")) || (!payload.isBlank() && payload.contains("IP"))) {
                     output = new PrintWriter(new FileWriter(file, true));
-                    output.printf("%s\r\n", log.get());
+                    output.printf("%s\n", log.get());
                     output.close();
                 }
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }

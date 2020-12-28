@@ -89,5 +89,11 @@ public class ProxyThread implements Runnable {
             e.printStackTrace();
         }
         System.out.println("Thread: " + proxyThreadIndentifier + "          [" + Util.ANSI_RED + "CLOSED" + Util.ANSI_RESET + "]");
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+
+        String logPayload = "[" + dtf.format(now) + "]    IP: " + clientSocket.getInetAddress().toString().substring(1) + "   Connection closed";
+        log.add(logPayload);
     }
 }
